@@ -96,9 +96,7 @@ class WorldModelTransformer(nn.Module):
 
         self.action_proj = nn.Linear(action_dim, hidden_size) if action_dim > 0 else None
 
-        self.blocks = nn.ModuleList(
-            [WorldModelBlock(hidden_size, num_heads, drop=drop_rate) for _ in range(depth)]
-        )
+        self.blocks = nn.ModuleList([WorldModelBlock(hidden_size, num_heads, drop=drop_rate) for _ in range(depth)])
 
         self.norm = nn.LayerNorm(hidden_size)
         self.head = nn.Linear(hidden_size, frame_dim)

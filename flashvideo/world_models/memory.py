@@ -47,13 +47,13 @@ class CompressedMemoryBank(nn.Module):
         remainder = n % self.compress_ratio
 
         if groups > 0:
-            grouped = entries[:, :groups * self.compress_ratio].reshape(b, groups, self.compress_ratio * d)
+            grouped = entries[:, : groups * self.compress_ratio].reshape(b, groups, self.compress_ratio * d)
             compressed = self.compressor(grouped)
         else:
             compressed = entries[:, :0]
 
         if remainder > 0:
-            leftover = entries[:, groups * self.compress_ratio:]
+            leftover = entries[:, groups * self.compress_ratio :]
             compressed = torch.cat([compressed, leftover], dim=1)
 
         return compressed

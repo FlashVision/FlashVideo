@@ -28,8 +28,14 @@ def main() -> None:
 
     # Build a small VideoViT
     model = VideoViT(
-        in_channels=3, num_classes=10, embed_dim=128, depth=4,
-        num_heads=4, tubelet_size=(2, 16, 16), num_frames=8, image_size=128,
+        in_channels=3,
+        num_classes=10,
+        embed_dim=128,
+        depth=4,
+        num_heads=4,
+        tubelet_size=(2, 16, 16),
+        num_frames=8,
+        image_size=128,
     )
 
     # Classification

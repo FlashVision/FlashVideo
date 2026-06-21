@@ -107,5 +107,7 @@ def apply_lora(
 
     trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
     total = sum(p.numel() for p in model.parameters())
-    print(f"LoRA applied to {len(replaced)} layers | Trainable: {trainable:,} / {total:,} ({100*trainable/total:.2f}%)")
+    print(
+        f"LoRA applied to {len(replaced)} layers | Trainable: {trainable:,} / {total:,} ({100 * trainable / total:.2f}%)"
+    )
     return model

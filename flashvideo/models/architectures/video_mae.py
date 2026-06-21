@@ -66,9 +66,7 @@ class VideoMAEEncoder(nn.Module):
 
     def __init__(self, dim: int, depth: int, num_heads: int, mlp_ratio: float = 4.0, drop: float = 0.0):
         super().__init__()
-        self.blocks = nn.ModuleList([
-            VideoMAEBlock(dim, num_heads, mlp_ratio, drop) for _ in range(depth)
-        ])
+        self.blocks = nn.ModuleList([VideoMAEBlock(dim, num_heads, mlp_ratio, drop) for _ in range(depth)])
         self.norm = nn.LayerNorm(dim)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
@@ -86,9 +84,7 @@ class VideoMAEDecoder(nn.Module):
         self.mask_token = nn.Parameter(torch.zeros(1, 1, decoder_dim))
         nn.init.trunc_normal_(self.mask_token, std=0.02)
 
-        self.blocks = nn.ModuleList([
-            VideoMAEBlock(decoder_dim, num_heads) for _ in range(depth)
-        ])
+        self.blocks = nn.ModuleList([VideoMAEBlock(decoder_dim, num_heads) for _ in range(depth)])
         self.norm = nn.LayerNorm(decoder_dim)
         self.head = nn.Linear(decoder_dim, patch_dim)
 
@@ -100,7 +96,7 @@ class VideoMAEDecoder(nn.Module):
         visible_idx = (~mask).nonzero(as_tuple=False)
         for b in range(B):
             b_visible = visible_idx[visible_idx[:, 0] == b, 1]
-            full_tokens[b, b_visible] = vis[b, :b_visible.shape[0]]
+            full_tokens[b, b_visible] = vis[b, : b_visible.shape[0]]
 
         for block in self.blocks:
             full_tokens = block(full_tokens)
@@ -165,7 +161,8 @@ class VideoMAE(nn.Module):
         patch_dim = in_channels * tubelet_length * patch_size * patch_size
 
         self.patch_embed = nn.Conv3d(
-            in_channels, embed_dim,
+            in_channels,
+            embed_dim,
             kernel_size=(tubelet_length, patch_size, patch_size),
             stride=(tubelet_length, patch_size, patch_size),
         )
@@ -200,7 +197,7 @@ class VideoMAE(nn.Module):
         target = self._patchify_target(x)
 
         tokens = self.patch_embed(x).flatten(2).transpose(1, 2)
-        tokens = tokens + self.pos_embed[:, :tokens.shape[1]]
+        tokens = tokens + self.pos_embed[:, : tokens.shape[1]]
 
         mask = self.masking(B, x.device)
 
@@ -211,7 +208,7 @@ class VideoMAE(nn.Module):
         max_vis = max(vt.shape[0] for vt in visible_tokens)
         padded = torch.zeros(B, max_vis, self.embed_dim, device=x.device)
         for b, vt in enumerate(visible_tokens):
-            padded[b, :vt.shape[0]] = vt
+            padded[b, : vt.shape[0]] = vt
 
         encoded = self.encoder(padded)
         pred = self.decoder(encoded, mask, self.num_patches)
@@ -230,7 +227,7 @@ class VideoMAE(nn.Module):
             Dict with 'logits' and 'features'.
         """
         tokens = self.patch_embed(x).flatten(2).transpose(1, 2)
-        tokens = tokens + self.pos_embed[:, :tokens.shape[1]]
+        tokens = tokens + self.pos_embed[:, : tokens.shape[1]]
         features = self.encoder(tokens)
         pooled = features.mean(dim=1)
 

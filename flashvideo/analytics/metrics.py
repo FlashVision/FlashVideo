@@ -118,6 +118,7 @@ def compute_top_k_accuracy(
 # Helpers
 # ------------------------------------------------------------------
 
+
 def _cov(x: torch.Tensor) -> torch.Tensor:
     """Compute covariance matrix."""
     n = x.shape[0]

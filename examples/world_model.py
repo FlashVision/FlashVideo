@@ -31,8 +31,12 @@ def main() -> None:
     # 1. Autoregressive world model
     print("1. World Model Rollout")
     world_model = WorldModelTransformer(
-        frame_dim=128, hidden_size=256, depth=4,
-        num_heads=4, action_dim=16, max_frames=64,
+        frame_dim=128,
+        hidden_size=256,
+        depth=4,
+        num_heads=4,
+        action_dim=16,
+        max_frames=64,
     )
     print(f"   Parameters: {sum(p.numel() for p in world_model.parameters()):,}")
 

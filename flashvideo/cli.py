@@ -54,7 +54,18 @@ def _check(args: argparse.Namespace) -> None:
         except ImportError:
             return False
 
-    for pkg in ["torch", "torchvision", "numpy", "cv2", "PIL", "yaml", "tqdm", "safetensors", "diffusers", "transformers"]:
+    for pkg in [
+        "torch",
+        "torchvision",
+        "numpy",
+        "cv2",
+        "PIL",
+        "yaml",
+        "tqdm",
+        "safetensors",
+        "diffusers",
+        "transformers",
+    ]:
         ok = _try_import(pkg)
         checks.append((pkg, ok))
 

@@ -22,7 +22,9 @@ class Validator:
     ) -> None:
         self.model = model
         self.dataloader = dataloader
-        self.device = torch.device("cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu")
+        self.device = torch.device(
+            "cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu"
+        )
         self.metric_names = metrics or ["loss", "accuracy"]
 
     @torch.no_grad()
@@ -54,7 +56,11 @@ class Validator:
             total_loss += loss.item()
 
             if logits is not None and labels is not None:
-                labels = labels.to(self.device) if isinstance(labels, torch.Tensor) else torch.tensor(labels, device=self.device)
+                labels = (
+                    labels.to(self.device)
+                    if isinstance(labels, torch.Tensor)
+                    else torch.tensor(labels, device=self.device)
+                )
                 preds = logits.argmax(dim=-1)
                 correct += (preds == labels).sum().item()
                 total += labels.numel()

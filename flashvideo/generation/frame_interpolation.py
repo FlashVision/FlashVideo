@@ -150,7 +150,9 @@ class RefineNet(nn.Module):
             nn.Conv2d(64, in_channels, 3, 1, 1),
         )
 
-    def forward(self, img0: torch.Tensor, img1: torch.Tensor, merged: torch.Tensor, flow_0t: torch.Tensor, flow_1t: torch.Tensor) -> torch.Tensor:
+    def forward(
+        self, img0: torch.Tensor, img1: torch.Tensor, merged: torch.Tensor, flow_0t: torch.Tensor, flow_1t: torch.Tensor
+    ) -> torch.Tensor:
         x = torch.cat([img0, img1, merged, flow_0t, flow_1t], dim=1)
         residual = self.net(x)
         return merged + residual
@@ -194,9 +196,7 @@ class FrameInterpolator(nn.Module):
         }
 
     @torch.no_grad()
-    def interpolate_sequence(
-        self, frames: torch.Tensor, multiplier: int = 2
-    ) -> torch.Tensor:
+    def interpolate_sequence(self, frames: torch.Tensor, multiplier: int = 2) -> torch.Tensor:
         """Interpolate a video sequence to increase frame rate.
 
         Args:

@@ -17,9 +17,16 @@ from flashvideo.understanding.classification import VideoClassifier
 
 
 KINETICS_SAMPLE_CLASSES = [
-    "abseiling", "air drumming", "answering questions", "applauding",
-    "applying cream", "archery", "arm wrestling", "arranging flowers",
-    "assembling computer", "auctioning",
+    "abseiling",
+    "air drumming",
+    "answering questions",
+    "applauding",
+    "applying cream",
+    "archery",
+    "arm wrestling",
+    "arranging flowers",
+    "assembling computer",
+    "auctioning",
 ]
 
 
@@ -33,9 +40,14 @@ def main() -> None:
     print("=== Action Recognition Demo (TimeSformer) ===\n")
 
     model = TimeSformer(
-        in_channels=3, num_classes=len(KINETICS_SAMPLE_CLASSES),
-        embed_dim=192, depth=4, num_heads=4,
-        patch_size=16, num_frames=8, image_size=224,
+        in_channels=3,
+        num_classes=len(KINETICS_SAMPLE_CLASSES),
+        embed_dim=192,
+        depth=4,
+        num_heads=4,
+        patch_size=16,
+        num_frames=8,
+        image_size=224,
     )
 
     classifier = VideoClassifier(

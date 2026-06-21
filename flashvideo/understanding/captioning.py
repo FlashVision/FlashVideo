@@ -57,7 +57,9 @@ class VideoCaptioner:
         max_length: int = 64,
         device: str = "auto",
     ) -> None:
-        self.device = torch.device("cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu")
+        self.device = torch.device(
+            "cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu"
+        )
         self.encoder = vision_encoder.to(self.device).eval()
         self.decoder = (decoder or CaptionDecoder()).to(self.device).eval()
         self.transform = VideoTransform(size=image_size)

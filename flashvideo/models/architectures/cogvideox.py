@@ -22,12 +22,21 @@ from flashvideo.registry import MODELS
 class CausalConv3d(nn.Module):
     """3D causal convolution that only attends to past temporal frames."""
 
-    def __init__(self, in_ch: int, out_ch: int, kernel_size: Tuple[int, int, int] = (3, 3, 3), stride: Tuple[int, int, int] = (1, 1, 1)):
+    def __init__(
+        self,
+        in_ch: int,
+        out_ch: int,
+        kernel_size: Tuple[int, int, int] = (3, 3, 3),
+        stride: Tuple[int, int, int] = (1, 1, 1),
+    ):
         super().__init__()
         self.temporal_pad = kernel_size[0] - 1
         spatial_pad = (kernel_size[1] // 2, kernel_size[2] // 2)
         self.conv = nn.Conv3d(
-            in_ch, out_ch, kernel_size, stride=stride,
+            in_ch,
+            out_ch,
+            kernel_size,
+            stride=stride,
             padding=(0, spatial_pad[0], spatial_pad[1]),
         )
 
@@ -59,7 +68,8 @@ class CausalDownsample3D(nn.Module):
     def __init__(self, in_ch: int, out_ch: int, temporal_stride: int = 2, spatial_stride: int = 2):
         super().__init__()
         self.conv = CausalConv3d(
-            in_ch, out_ch,
+            in_ch,
+            out_ch,
             kernel_size=(3, 3, 3),
             stride=(temporal_stride, spatial_stride, spatial_stride),
         )
@@ -79,8 +89,10 @@ class CausalUpsample3D(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = F.interpolate(
-            x, scale_factor=(self.temporal_scale, self.spatial_scale, self.spatial_scale),
-            mode="trilinear", align_corners=False,
+            x,
+            scale_factor=(self.temporal_scale, self.spatial_scale, self.spatial_scale),
+            mode="trilinear",
+            align_corners=False,
         )
         return self.conv(x)
 
@@ -176,7 +188,7 @@ class TextVideoJointAttention(nn.Module):
         super().__init__()
         self.num_heads = num_heads
         self.head_dim = dim // num_heads
-        self.scale = self.head_dim ** -0.5
+        self.scale = self.head_dim**-0.5
 
         self.q_proj = nn.Linear(dim, dim)
         self.k_proj = nn.Linear(dim, dim)
@@ -212,22 +224,24 @@ class ExpertFeedForward(nn.Module):
         hidden = int(dim * mult)
         self.num_experts = num_experts
         self.gate = nn.Linear(dim, num_experts)
-        self.experts = nn.ModuleList([
-            nn.Sequential(
-                nn.Linear(dim, hidden),
-                nn.GELU(),
-                nn.Dropout(drop),
-                nn.Linear(hidden, dim),
-                nn.Dropout(drop),
-            )
-            for _ in range(num_experts)
-        ])
+        self.experts = nn.ModuleList(
+            [
+                nn.Sequential(
+                    nn.Linear(dim, hidden),
+                    nn.GELU(),
+                    nn.Dropout(drop),
+                    nn.Linear(hidden, dim),
+                    nn.Dropout(drop),
+                )
+                for _ in range(num_experts)
+            ]
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         gate_scores = self.gate(x).softmax(dim=-1)
         output = torch.zeros_like(x)
         for i, expert in enumerate(self.experts):
-            output = output + gate_scores[..., i:i+1] * expert(x)
+            output = output + gate_scores[..., i : i + 1] * expert(x)
         return output
 
 
@@ -306,10 +320,9 @@ class CogVideoX(nn.Module):
 
         self.text_proj = nn.Linear(context_dim, hidden_size) if context_dim else None
 
-        self.blocks = nn.ModuleList([
-            ExpertTransformerBlock(hidden_size, cond_dim, num_heads, num_experts, drop_rate)
-            for _ in range(depth)
-        ])
+        self.blocks = nn.ModuleList(
+            [ExpertTransformerBlock(hidden_size, cond_dim, num_heads, num_experts, drop_rate) for _ in range(depth)]
+        )
 
         self.final_norm = nn.LayerNorm(hidden_size)
         self.final_proj = nn.Linear(hidden_size, patch_dim)
@@ -368,7 +381,7 @@ class CogVideoX(nn.Module):
         tokens = self.patch_embed(tokens)
 
         if tokens.shape[1] <= self.pos_embed.shape[1]:
-            tokens = tokens + self.pos_embed[:, :tokens.shape[1]]
+            tokens = tokens + self.pos_embed[:, : tokens.shape[1]]
 
         for block in self.blocks:
             tokens = block(tokens, t_emb, text_tokens)

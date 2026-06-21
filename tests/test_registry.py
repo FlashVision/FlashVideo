@@ -25,6 +25,7 @@ class TestRegistry:
             pass
 
         with pytest.raises(KeyError, match="already registered"):
+
             @reg.register("Bar")
             class Bar2:
                 pass

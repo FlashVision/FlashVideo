@@ -33,7 +33,9 @@ class EnvironmentSimulator:
         frame_dim: int = 512,
         device: str = "auto",
     ) -> None:
-        self.device = torch.device("cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu")
+        self.device = torch.device(
+            "cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu"
+        )
         self.world_model = (world_model or WorldModelTransformer(frame_dim=frame_dim)).to(self.device).eval()
         self.decoder = decoder
         self.frame_dim = frame_dim

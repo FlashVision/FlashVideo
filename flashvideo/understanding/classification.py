@@ -35,7 +35,9 @@ class VideoClassifier:
         image_size: int = 224,
         device: str = "auto",
     ) -> None:
-        self.device = torch.device("cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu")
+        self.device = torch.device(
+            "cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu"
+        )
         self.model = model.to(self.device).eval()
         self.class_names = class_names
         self.transform = VideoTransform(size=image_size)

@@ -34,7 +34,9 @@ class ActionClassifier:
         if model is not None:
             backbone = model
         elif checkpoint is not None:
-            backbone = TimeSformer(num_classes=num_classes, embed_dim=384, depth=6, num_heads=6, num_frames=8, image_size=224)
+            backbone = TimeSformer(
+                num_classes=num_classes, embed_dim=384, depth=6, num_heads=6, num_frames=8, image_size=224
+            )
             state = torch.load(checkpoint, map_location="cpu", weights_only=True)
             if "model_state_dict" in state:
                 state = state["model_state_dict"]

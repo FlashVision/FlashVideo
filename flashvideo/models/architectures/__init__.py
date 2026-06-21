@@ -7,6 +7,11 @@ from .video_mae import VideoMAE
 from .slowfast import SlowFast
 
 __all__ = [
-    "VideoDiT", "VideoViT", "TimeSformer", "WorldModelTransformer",
-    "CogVideoX", "VideoMAE", "SlowFast",
+    "VideoDiT",
+    "VideoViT",
+    "TimeSformer",
+    "WorldModelTransformer",
+    "CogVideoX",
+    "VideoMAE",
+    "SlowFast",
 ]

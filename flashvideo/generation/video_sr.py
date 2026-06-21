@@ -105,9 +105,7 @@ class BidirectionalPropagation(nn.Module):
             fused = self.backward_fuse(torch.cat([features[:, t], warped], dim=1))
             backward_feats[t] = self.backward_trunk(fused)
 
-        output = torch.stack([
-            forward_feats[t] + backward_feats[t] for t in range(T)
-        ], dim=1)
+        output = torch.stack([forward_feats[t] + backward_feats[t] for t in range(T)], dim=1)
         return output
 
 
@@ -121,11 +119,13 @@ class PixelShuffleUpsampler(nn.Module):
         remaining = scale
         while remaining > 1:
             factor = min(2, remaining)
-            layers.extend([
-                nn.Conv2d(current_ch, current_ch * factor * factor, 3, 1, 1),
-                nn.PixelShuffle(factor),
-                nn.LeakyReLU(0.1, inplace=True),
-            ])
+            layers.extend(
+                [
+                    nn.Conv2d(current_ch, current_ch * factor * factor, 3, 1, 1),
+                    nn.PixelShuffle(factor),
+                    nn.LeakyReLU(0.1, inplace=True),
+                ]
+            )
             remaining //= factor
         layers.append(nn.Conv2d(current_ch, out_channels, 3, 1, 1))
         self.net = nn.Sequential(*layers)
@@ -197,7 +197,9 @@ class VideoSuperResolution(nn.Module):
         for t in range(T):
             recon = self.reconstruction(propagated[:, t])
             sr = self.upsample(recon)
-            upsampled_lr = F.interpolate(lr_video[:, t], scale_factor=self.scale_factor, mode="bilinear", align_corners=False)
+            upsampled_lr = F.interpolate(
+                lr_video[:, t], scale_factor=self.scale_factor, mode="bilinear", align_corners=False
+            )
             sr_frames.append(sr + upsampled_lr)
 
         return torch.stack(sr_frames, dim=1)

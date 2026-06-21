@@ -13,8 +13,13 @@ from flashvideo.models.lora import LoRALinear, apply_lora
 class TestVideoDiT:
     def test_forward_shape(self):
         model = VideoDiT(
-            in_channels=4, hidden_size=64, depth=2, num_heads=4,
-            patch_size=(1, 2, 2), num_frames=4, image_size=16,
+            in_channels=4,
+            hidden_size=64,
+            depth=2,
+            num_heads=4,
+            patch_size=(1, 2, 2),
+            num_frames=4,
+            image_size=16,
         )
         x = torch.randn(2, 4, 4, 16, 16)
         t = torch.randint(0, 1000, (2,))
@@ -23,8 +28,13 @@ class TestVideoDiT:
 
     def test_with_context(self):
         model = VideoDiT(
-            in_channels=4, hidden_size=64, depth=2, num_heads=4,
-            patch_size=(1, 2, 2), num_frames=4, image_size=16,
+            in_channels=4,
+            hidden_size=64,
+            depth=2,
+            num_heads=4,
+            patch_size=(1, 2, 2),
+            num_frames=4,
+            image_size=16,
             context_dim=32,
         )
         x = torch.randn(1, 4, 4, 16, 16)
@@ -37,8 +47,14 @@ class TestVideoDiT:
 class TestVideoViT:
     def test_classification(self):
         model = VideoViT(
-            in_channels=3, num_classes=10, embed_dim=64, depth=2,
-            num_heads=4, tubelet_size=(2, 8, 8), num_frames=4, image_size=32,
+            in_channels=3,
+            num_classes=10,
+            embed_dim=64,
+            depth=2,
+            num_heads=4,
+            tubelet_size=(2, 8, 8),
+            num_frames=4,
+            image_size=32,
         )
         x = torch.randn(2, 3, 4, 32, 32)
         out = model(x)
@@ -51,8 +67,14 @@ class TestVideoViT:
 class TestTimeSformer:
     def test_forward(self):
         model = TimeSformer(
-            in_channels=3, num_classes=10, embed_dim=64, depth=2,
-            num_heads=4, patch_size=8, num_frames=4, image_size=32,
+            in_channels=3,
+            num_classes=10,
+            embed_dim=64,
+            depth=2,
+            num_heads=4,
+            patch_size=8,
+            num_frames=4,
+            image_size=32,
         )
         x = torch.randn(2, 3, 4, 32, 32)
         out = model(x)
@@ -62,8 +84,12 @@ class TestTimeSformer:
 class TestWorldModel:
     def test_forward_and_loss(self):
         model = WorldModelTransformer(
-            frame_dim=32, hidden_size=64, depth=2, num_heads=4,
-            action_dim=8, max_frames=16,
+            frame_dim=32,
+            hidden_size=64,
+            depth=2,
+            num_heads=4,
+            action_dim=8,
+            max_frames=16,
         )
         frames = torch.randn(2, 8, 32)
         actions = torch.randn(2, 8, 8)
@@ -74,7 +100,11 @@ class TestWorldModel:
 
     def test_rollout(self):
         model = WorldModelTransformer(
-            frame_dim=32, hidden_size=64, depth=2, num_heads=4, max_frames=32,
+            frame_dim=32,
+            hidden_size=64,
+            depth=2,
+            num_heads=4,
+            max_frames=32,
         )
         initial = torch.randn(1, 4, 32)
         result = model.rollout(initial, num_steps=8)
@@ -84,8 +114,14 @@ class TestWorldModel:
 class TestFlashVideoModel:
     def test_build_videovit(self):
         model = FlashVideoModel(
-            arch="VideoViT", num_classes=5, embed_dim=64, depth=2,
-            num_heads=4, tubelet_size=(2, 8, 8), num_frames=4, image_size=32,
+            arch="VideoViT",
+            num_classes=5,
+            embed_dim=64,
+            depth=2,
+            num_heads=4,
+            tubelet_size=(2, 8, 8),
+            num_frames=4,
+            image_size=32,
         )
         x = torch.randn(1, 3, 4, 32, 32)
         out = model(x)
@@ -102,8 +138,14 @@ class TestLoRA:
 
     def test_apply_lora(self):
         model = VideoViT(
-            in_channels=3, num_classes=5, embed_dim=64, depth=2,
-            num_heads=4, tubelet_size=(2, 8, 8), num_frames=4, image_size=32,
+            in_channels=3,
+            num_classes=5,
+            embed_dim=64,
+            depth=2,
+            num_heads=4,
+            tubelet_size=(2, 8, 8),
+            num_frames=4,
+            image_size=32,
         )
         total_before = sum(p.numel() for p in model.parameters())
         model = apply_lora(model, rank=4)

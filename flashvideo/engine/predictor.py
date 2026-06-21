@@ -9,9 +9,14 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from flashvideo.data.frame_sampler import UniformSampler
-from flashvideo.data.transforms import VideoTransform
-from flashvideo.data.video_reader import VideoReader
+try:
+    from flashvideo.data.frame_sampler import UniformSampler
+    from flashvideo.data.transforms import VideoTransform
+    from flashvideo.data.video_reader import VideoReader
+except ImportError:
+    UniformSampler = None
+    VideoTransform = None
+    VideoReader = None
 
 
 class Predictor:
@@ -27,7 +32,9 @@ class Predictor:
         num_frames: int = 16,
         image_size: int = 256,
     ) -> None:
-        self.device = torch.device("cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu")
+        self.device = torch.device(
+            "cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu"
+        )
         self.model = model.to(self.device).eval()
         self.transform = VideoTransform(size=image_size)
         self.sampler = UniformSampler(num_frames)

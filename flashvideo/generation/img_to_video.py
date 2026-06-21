@@ -31,7 +31,9 @@ class ImageToVideoPipeline:
         vae_decoder: Optional[nn.Module] = None,
         device: str = "auto",
     ) -> None:
-        self.device = torch.device("cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu")
+        self.device = torch.device(
+            "cuda" if device == "auto" and torch.cuda.is_available() else device if device != "auto" else "cpu"
+        )
         self.model = model.to(self.device).eval()
         self.scheduler = scheduler or DDIMScheduler()
         self.vae_encoder = vae_encoder

@@ -33,14 +33,19 @@ class Bottleneck3D(nn.Module):
         temporal_stride: int = 1,
     ):
         super().__init__()
-        self.conv1 = nn.Conv3d(in_planes, planes, kernel_size=(temporal_kernel, 1, 1),
-                               stride=(temporal_stride, 1, 1),
-                               padding=(temporal_kernel // 2, 0, 0), bias=False)
+        self.conv1 = nn.Conv3d(
+            in_planes,
+            planes,
+            kernel_size=(temporal_kernel, 1, 1),
+            stride=(temporal_stride, 1, 1),
+            padding=(temporal_kernel // 2, 0, 0),
+            bias=False,
+        )
         self.bn1 = nn.BatchNorm3d(planes)
 
-        self.conv2 = nn.Conv3d(planes, planes, kernel_size=(1, 3, 3),
-                               stride=(1, stride, stride),
-                               padding=(0, 1, 1), bias=False)
+        self.conv2 = nn.Conv3d(
+            planes, planes, kernel_size=(1, 3, 3), stride=(1, stride, stride), padding=(0, 1, 1), bias=False
+        )
         self.bn2 = nn.BatchNorm3d(planes)
 
         self.conv3 = nn.Conv3d(planes, planes * self.expansion, kernel_size=1, bias=False)
@@ -49,8 +54,13 @@ class Bottleneck3D(nn.Module):
         self.downsample = None
         if stride != 1 or in_planes != planes * self.expansion or temporal_stride != 1:
             self.downsample = nn.Sequential(
-                nn.Conv3d(in_planes, planes * self.expansion,
-                          kernel_size=1, stride=(temporal_stride, stride, stride), bias=False),
+                nn.Conv3d(
+                    in_planes,
+                    planes * self.expansion,
+                    kernel_size=1,
+                    stride=(temporal_stride, stride, stride),
+                    bias=False,
+                ),
                 nn.BatchNorm3d(planes * self.expansion),
             )
 
@@ -69,8 +79,9 @@ class SlowPathway(nn.Module):
 
     def __init__(self, in_channels: int = 3, base_channels: int = 64, layers: Tuple[int, ...] = (3, 4, 6, 3)):
         super().__init__()
-        self.conv1 = nn.Conv3d(in_channels, base_channels, kernel_size=(1, 7, 7),
-                               stride=(1, 2, 2), padding=(0, 3, 3), bias=False)
+        self.conv1 = nn.Conv3d(
+            in_channels, base_channels, kernel_size=(1, 7, 7), stride=(1, 2, 2), padding=(0, 3, 3), bias=False
+        )
         self.bn1 = nn.BatchNorm3d(base_channels)
         self.pool1 = nn.MaxPool3d(kernel_size=(1, 3, 3), stride=(1, 2, 2), padding=(0, 1, 1))
 
@@ -81,7 +92,9 @@ class SlowPathway(nn.Module):
 
         self.out_channels = base_channels * 8 * Bottleneck3D.expansion
 
-    def _make_layer(self, in_planes: int, planes: int, blocks: int, stride: int = 1, temporal_kernel: int = 1) -> nn.Sequential:
+    def _make_layer(
+        self, in_planes: int, planes: int, blocks: int, stride: int = 1, temporal_kernel: int = 1
+    ) -> nn.Sequential:
         layers = [Bottleneck3D(in_planes, planes, stride, temporal_kernel)]
         for _ in range(1, blocks):
             layers.append(Bottleneck3D(planes * Bottleneck3D.expansion, planes, temporal_kernel=temporal_kernel))
@@ -102,8 +115,9 @@ class FastPathway(nn.Module):
 
     def __init__(self, in_channels: int = 3, base_channels: int = 8, layers: Tuple[int, ...] = (3, 4, 6, 3)):
         super().__init__()
-        self.conv1 = nn.Conv3d(in_channels, base_channels, kernel_size=(5, 7, 7),
-                               stride=(1, 2, 2), padding=(2, 3, 3), bias=False)
+        self.conv1 = nn.Conv3d(
+            in_channels, base_channels, kernel_size=(5, 7, 7), stride=(1, 2, 2), padding=(2, 3, 3), bias=False
+        )
         self.bn1 = nn.BatchNorm3d(base_channels)
         self.pool1 = nn.MaxPool3d(kernel_size=(1, 3, 3), stride=(1, 2, 2), padding=(0, 1, 1))
 
@@ -114,7 +128,9 @@ class FastPathway(nn.Module):
 
         self.out_channels = base_channels * 8 * Bottleneck3D.expansion
 
-    def _make_layer(self, in_planes: int, planes: int, blocks: int, stride: int = 1, temporal_kernel: int = 1) -> nn.Sequential:
+    def _make_layer(
+        self, in_planes: int, planes: int, blocks: int, stride: int = 1, temporal_kernel: int = 1
+    ) -> nn.Sequential:
         layers = [Bottleneck3D(in_planes, planes, stride, temporal_kernel)]
         for _ in range(1, blocks):
             layers.append(Bottleneck3D(planes * Bottleneck3D.expansion, planes, temporal_kernel=temporal_kernel))
@@ -136,7 +152,8 @@ class LateralConnection(nn.Module):
     def __init__(self, fast_channels: int, slow_channels: int, alpha: int = 8, kernel_size: int = 5):
         super().__init__()
         self.conv = nn.Conv3d(
-            fast_channels, slow_channels,
+            fast_channels,
+            slow_channels,
             kernel_size=(kernel_size, 1, 1),
             stride=(alpha, 1, 1),
             padding=(kernel_size // 2, 0, 0),
@@ -183,7 +200,9 @@ class SlowFast(nn.Module):
         self.fast = FastPathway(in_channels, fast_channels, layers)
 
         self.lateral = LateralConnection(
-            self.fast.out_channels, slow_channels * 2, alpha=alpha,
+            self.fast.out_channels,
+            slow_channels * 2,
+            alpha=alpha,
         )
 
         total_features = self.slow.out_channels + slow_channels * 2
@@ -212,7 +231,7 @@ class SlowFast(nn.Module):
         """
         B, C, T, H, W = x.shape
 
-        x_slow = x[:, :, ::self.alpha]
+        x_slow = x[:, :, :: self.alpha]
         x_fast = x
 
         slow_feat = self.slow(x_slow)
@@ -222,7 +241,12 @@ class SlowFast(nn.Module):
         t_slow = slow_feat.shape[2]
         t_lat = lateral_feat.shape[2]
         if t_lat != t_slow:
-            lateral_feat = F.interpolate(lateral_feat, size=(t_slow, lateral_feat.shape[3], lateral_feat.shape[4]), mode="trilinear", align_corners=False)
+            lateral_feat = F.interpolate(
+                lateral_feat,
+                size=(t_slow, lateral_feat.shape[3], lateral_feat.shape[4]),
+                mode="trilinear",
+                align_corners=False,
+            )
 
         fused = torch.cat([slow_feat, lateral_feat], dim=1)
 

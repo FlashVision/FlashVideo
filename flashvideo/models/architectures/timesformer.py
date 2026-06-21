@@ -107,9 +107,7 @@ class TimeSformer(nn.Module):
         self.temporal_embed = nn.Parameter(torch.zeros(1, num_frames, embed_dim))
         self.pos_drop = nn.Dropout(drop_rate)
 
-        self.blocks = nn.ModuleList(
-            [DividedSpaceTimeBlock(embed_dim, num_heads, drop=drop_rate) for _ in range(depth)]
-        )
+        self.blocks = nn.ModuleList([DividedSpaceTimeBlock(embed_dim, num_heads, drop=drop_rate) for _ in range(depth)])
 
         self.norm = nn.LayerNorm(embed_dim)
         self.head = nn.Linear(embed_dim, num_classes) if num_classes > 0 else nn.Identity()
