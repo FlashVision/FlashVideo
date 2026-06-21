@@ -1,0 +1,37 @@
+task: world_model
+
+model:
+  name: WorldModel
+  in_channels: 4
+  hidden_size: 768
+  depth: 12
+  num_heads: 12
+  num_frames: 32
+  image_size: 256
+
+data:
+  dataset: folder
+  root: data/environments/
+  num_frames: 32
+  frame_stride: 1
+  image_size: 256
+  batch_size: 4
+  num_workers: 4
+  sampler: uniform
+
+train:
+  epochs: 200
+  lr: 5.0e-5
+  weight_decay: 0.01
+  warmup_steps: 10000
+  scheduler: cosine
+  mixed_precision: true
+  gradient_checkpointing: true
+  gradient_accumulation: 8
+  max_grad_norm: 0.5
+  save_every: 10
+  eval_every: 5
+  output_dir: workspace/world_model/
+
+device: auto
+seed: 42

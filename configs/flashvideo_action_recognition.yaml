@@ -1,0 +1,38 @@
+task: action_recognition
+
+model:
+  name: TimeSformer
+  in_channels: 3
+  hidden_size: 768
+  depth: 12
+  num_heads: 12
+  patch_size: [1, 16, 16]
+  num_frames: 8
+  image_size: 224
+
+data:
+  dataset: kinetics
+  root: data/kinetics400/
+  num_frames: 8
+  frame_stride: 4
+  image_size: 224
+  batch_size: 16
+  num_workers: 8
+  sampler: uniform
+
+train:
+  epochs: 30
+  lr: 1.0e-3
+  weight_decay: 0.05
+  warmup_steps: 1000
+  scheduler: cosine
+  mixed_precision: true
+  gradient_checkpointing: false
+  gradient_accumulation: 2
+  max_grad_norm: 1.0
+  save_every: 5
+  eval_every: 1
+  output_dir: workspace/action_recognition/
+
+device: auto
+seed: 42

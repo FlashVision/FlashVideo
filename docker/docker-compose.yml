@@ -1,0 +1,16 @@
+services:
+  flashvideo:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    volumes:
+      - ../output:/app/output
+      - ../workspace:/app/workspace
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: ["check"]

@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=70.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flashvideo"
+version = "1.0.0"
+description = "FlashVideo: Video Understanding & Generation — Text-to-Video, Action Recognition, World Models, and Temporal AI"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "FlashVision"},
+]
+keywords = ["video-generation", "video-understanding", "action-recognition", "world-models", "text-to-video", "diffusion-transformer", "pytorch", "sora", "veo", "cosmos"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "transformers>=4.30.0",
+    "diffusers>=0.25.0",
+    "numpy>=1.24.0",
+    "opencv-python>=4.8.0",
+    "Pillow>=9.0.0",
+    "PyYAML>=6.0",
+    "tqdm>=4.65.0",
+    "decord>=0.6.0",
+    "safetensors>=0.4.0",
+]
+
+[project.optional-dependencies]
+analytics = ["matplotlib>=3.7.0", "pandas>=2.0.0"]
+export = ["onnx>=1.14.0", "onnxruntime>=1.15.0"]
+quality = ["torch-fidelity>=0.3.0"]
+all = ["matplotlib>=3.7.0", "pandas>=2.0.0", "onnx>=1.14.0", "onnxruntime>=1.15.0", "torch-fidelity>=0.3.0"]
+dev = ["pytest", "ruff", "pre-commit"]
+
+[project.urls]
+Homepage = "https://github.com/FlashVision/FlashVideo"
+Repository = "https://github.com/FlashVision/FlashVideo"
+Issues = "https://github.com/FlashVision/FlashVideo/issues"
+
+[project.scripts]
+flashvideo = "flashvideo.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["flashvideo*"]
+
+[tool.ruff]
+line-length = 120

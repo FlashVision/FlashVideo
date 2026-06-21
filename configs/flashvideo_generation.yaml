@@ -1,0 +1,46 @@
+task: text_to_video
+
+model:
+  name: VideoDiT
+  in_channels: 4
+  hidden_size: 768
+  depth: 12
+  num_heads: 12
+  patch_size: [1, 2, 2]
+  num_frames: 16
+  image_size: 256
+
+data:
+  dataset: webvid
+  root: data/webvid/
+  num_frames: 16
+  frame_stride: 1
+  image_size: 256
+  batch_size: 4
+  num_workers: 4
+  sampler: uniform
+
+train:
+  epochs: 100
+  lr: 1.0e-4
+  weight_decay: 0.01
+  warmup_steps: 5000
+  scheduler: cosine
+  mixed_precision: true
+  gradient_checkpointing: true
+  gradient_accumulation: 4
+  max_grad_norm: 1.0
+  save_every: 5
+  eval_every: 5
+  output_dir: workspace/generation/
+
+generation:
+  scheduler: DDIM
+  num_steps: 50
+  guidance_scale: 7.5
+  num_frames: 16
+  fps: 8
+  eta: 0.0
+
+device: auto
+seed: 42
