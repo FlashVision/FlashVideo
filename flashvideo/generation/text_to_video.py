@@ -7,15 +7,13 @@ with iterative denoising through a configurable scheduler.
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional
 
-import numpy as np
 import torch
 import torch.nn as nn
 from tqdm import tqdm
 
 from flashvideo.generation.schedulers import BaseScheduler, DDIMScheduler
-from flashvideo.models.architectures.video_dit import VideoDiT
 
 
 class TextToVideoPipeline:

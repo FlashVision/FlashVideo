@@ -11,7 +11,6 @@ Super-Resolution and Beyond" (Chan et al., CVPR 2021)
 
 from __future__ import annotations
 
-from typing import Optional
 
 import torch
 import torch.nn as nn

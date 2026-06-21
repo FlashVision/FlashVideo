@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional, Tuple
 
 import torch
 import torch.nn as nn
@@ -35,7 +34,7 @@ class Exporter:
         opset: int,
     ) -> str:
         if isinstance(model_or_path, str):
-            state = torch.load(model_or_path, map_location="cpu", weights_only=True)
+            torch.load(model_or_path, map_location="cpu", weights_only=True)
             raise RuntimeError(
                 "Cannot reconstruct model architecture from a state dict alone. "
                 "Pass an nn.Module instance instead, or a full checkpoint "

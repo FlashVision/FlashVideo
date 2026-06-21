@@ -1,6 +1,5 @@
 """Tests for video generation components."""
 
-import pytest
 import torch
 
 from flashvideo.generation.schedulers import DDPMScheduler, DDIMScheduler, DPMPPScheduler

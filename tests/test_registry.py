@@ -2,7 +2,7 @@
 
 import pytest
 
-from flashvideo.registry import Registry, MODELS, SCHEDULERS, DATASETS, TASKS
+from flashvideo.registry import Registry, MODELS, SCHEDULERS, DATASETS
 
 
 class TestRegistry:

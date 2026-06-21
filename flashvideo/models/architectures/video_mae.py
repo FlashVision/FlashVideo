@@ -10,7 +10,6 @@ for Self-Supervised Video Pre-Training" (Tong et al., NeurIPS 2022)
 
 from __future__ import annotations
 
-from typing import Optional, Tuple
 
 import torch
 import torch.nn as nn

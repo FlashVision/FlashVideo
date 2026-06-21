@@ -1,6 +1,5 @@
 """Tests for new FlashVideo model architectures and components."""
 
-import pytest
 import torch
 
 
@@ -123,7 +122,6 @@ class TestFrameInterpolation:
 
 class TestKineticsDataset:
     def test_registry(self):
-        from flashvideo.data.kinetics import KineticsFullDataset  # triggers registration
         from flashvideo.registry import DATASETS
         assert "kinetics_full" in DATASETS
 
@@ -139,7 +137,6 @@ class TestKineticsDataset:
 class TestRegistration:
     def test_video_models_registered(self):
         from flashvideo.registry import MODELS
-        from flashvideo.models.architectures import CogVideoX, VideoMAE, SlowFast
         assert "CogVideoX" in MODELS
         assert "VideoMAE" in MODELS
         assert "SlowFast" in MODELS

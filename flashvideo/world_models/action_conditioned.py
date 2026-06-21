@@ -7,7 +7,7 @@ with a video decoder for pixel-level prediction.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional
+from typing import Dict, Optional
 
 import torch
 import torch.nn as nn

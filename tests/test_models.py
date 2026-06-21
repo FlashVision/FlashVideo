@@ -1,6 +1,5 @@
 """Tests for FlashVideo model architectures."""
 
-import pytest
 import torch
 
 from flashvideo.models.architectures.video_dit import VideoDiT

@@ -6,11 +6,10 @@ Provides temporal segmentation (action boundaries), event detection
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class TemporalModeling(nn.Module):
@@ -79,7 +78,7 @@ class EventDetector(nn.Module):
         """Return detected event segments as ``(start_frame, end_frame, score)``."""
         out = self.forward(features)
         event_probs = torch.sigmoid(out["event_scores"].squeeze(-1))
-        boundary_probs = torch.sigmoid(out["boundary_scores"])
+        torch.sigmoid(out["boundary_scores"])
 
         results = []
         for b in range(features.shape[0]):

@@ -6,10 +6,8 @@ diffusion process on the image's latent representation as the first frame.
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
-import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

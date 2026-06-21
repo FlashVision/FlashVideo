@@ -7,11 +7,9 @@ followed by spatial attention over all patches within each frame.
 
 from __future__ import annotations
 
-from typing import Optional
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from flashvideo.registry import MODELS
 
